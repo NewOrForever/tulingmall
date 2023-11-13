@@ -1,0 +1,16 @@
+
+mybatis:
+  mapper-locations:
+    - classpath:dao/*.xml
+    - classpath*:com/**/mapper/*.xml
+
+#tuling:
+#    jwt:
+#      keyPairName: jwt.jks
+#      keyPairAlias: jwt
+#      keyPairSecret: 123456
+#      keyPairStoreSecret: 123456
+server:
+  port: 9999
+
+

@@ -1,0 +1,9 @@
+server:
+  port: 8866
+spring:
+  application:
+    name: tulingmall-product
+mybatis:
+  mapper-locations:
+    - classpath*:com/**/mapper/*.xml
+    - classpath:dao/*.xml

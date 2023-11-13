@@ -1,0 +1,148 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.tuling.tulingmall.mapper.PmsProductMapper">
+  <resultMap id="BaseResultMap" type="com.tuling.tulingmall.model.PmsProduct">
+    <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="brand_id" jdbcType="BIGINT" property="brandId" />
+    <result column="product_category_id" jdbcType="BIGINT" property="productCategoryId" />
+    <result column="feight_template_id" jdbcType="BIGINT" property="feightTemplateId" />
+    <result column="product_attribute_category_id" jdbcType="BIGINT" property="productAttributeCategoryId" />
+    <result column="name" jdbcType="VARCHAR" property="name" />
+    <result column="pic" jdbcType="VARCHAR" property="pic" />
+    <result column="product_sn" jdbcType="VARCHAR" property="productSn" />
+    <result column="delete_status" jdbcType="INTEGER" property="deleteStatus" />
+    <result column="publish_status" jdbcType="INTEGER" property="publishStatus" />
+    <result column="new_status" jdbcType="INTEGER" property="newStatus" />
+    <result column="recommand_status" jdbcType="INTEGER" property="recommandStatus" />
+    <result column="verify_status" jdbcType="INTEGER" property="verifyStatus" />
+    <result column="sort" jdbcType="INTEGER" property="sort" />
+    <result column="sale" jdbcType="INTEGER" property="sale" />
+    <result column="price" jdbcType="DECIMAL" property="price" />
+    <result column="promotion_price" jdbcType="DECIMAL" property="promotionPrice" />
+    <result column="gift_growth" jdbcType="INTEGER" property="giftGrowth" />
+    <result column="gift_point" jdbcType="INTEGER" property="giftPoint" />
+    <result column="use_point_limit" jdbcType="INTEGER" property="usePointLimit" />
+    <result column="sub_title" jdbcType="VARCHAR" property="subTitle" />
+    <result column="original_price" jdbcType="DECIMAL" property="originalPrice" />
+    <result column="stock" jdbcType="INTEGER" property="stock" />
+    <result column="low_stock" jdbcType="INTEGER" property="lowStock" />
+    <result column="unit" jdbcType="VARCHAR" property="unit" />
+    <result column="weight" jdbcType="DECIMAL" property="weight" />
+    <result column="preview_status" jdbcType="INTEGER" property="previewStatus" />
+    <result column="service_ids" jdbcType="VARCHAR" property="serviceIds" />
+    <result column="keywords" jdbcType="VARCHAR" property="keywords" />
+    <result column="note" jdbcType="VARCHAR" property="note" />
+    <result column="album_pics" jdbcType="VARCHAR" property="albumPics" />
+    <result column="detail_title" jdbcType="VARCHAR" property="detailTitle" />
+    <result column="promotion_start_time" jdbcType="TIMESTAMP" property="promotionStartTime" />
+    <result column="promotion_end_time" jdbcType="TIMESTAMP" property="promotionEndTime" />
+    <result column="promotion_per_limit" jdbcType="INTEGER" property="promotionPerLimit" />
+    <result column="promotion_type" jdbcType="INTEGER" property="promotionType" />
+    <result column="brand_name" jdbcType="VARCHAR" property="brandName" />
+    <result column="product_category_name" jdbcType="VARCHAR" property="productCategoryName" />
+  </resultMap>
+  <resultMap extends="BaseResultMap" id="ResultMapWithBLOBs" type="com.tuling.tulingmall.model.PmsProduct">
+    <result column="description" jdbcType="LONGVARCHAR" property="description" />
+    <result column="detail_desc" jdbcType="LONGVARCHAR" property="detailDesc" />
+    <result column="detail_html" jdbcType="LONGVARCHAR" property="detailHtml" />
+    <result column="detail_mobile_html" jdbcType="LONGVARCHAR" property="detailMobileHtml" />
+  </resultMap>
+
+  <resultMap id="CmsSubjectProductRelationResultMap" type="com.tuling.tulingmall.model.CmsSubjectProductRelation">
+    <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="subject_id" jdbcType="BIGINT" property="subjectId" />
+    <result column="product_id" jdbcType="BIGINT" property="productId" />
+  </resultMap>
+  <resultMap id="CmsPrefrenceAreaProductRelationResultMap" type="com.tuling.tulingmall.model.CmsPrefrenceAreaProductRelation">
+    <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="prefrence_area_id" jdbcType="BIGINT" property="prefrenceAreaId" />
+    <result column="product_id" jdbcType="BIGINT" property="productId" />
+  </resultMap>
+
+  <resultMap id="PmsProductLadderResultMap" type="com.tuling.tulingmall.model.PmsProductLadder">
+    <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="product_id" jdbcType="BIGINT" property="productId" />
+    <result column="count" jdbcType="INTEGER" property="count" />
+    <result column="discount" jdbcType="DECIMAL" property="discount" />
+    <result column="price" jdbcType="DECIMAL" property="price" />
+  </resultMap>
+
+  <resultMap id="PmsProductFullReductionResultMap" type="com.tuling.tulingmall.model.PmsProductFullReduction">
+    <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="product_id" jdbcType="BIGINT" property="productId" />
+    <result column="full_price" jdbcType="DECIMAL" property="fullPrice" />
+    <result column="reduce_price" jdbcType="DECIMAL" property="reducePrice" />
+  </resultMap>
+
+  <resultMap id="PmsMemberPriceResultMap" type="com.tuling.tulingmall.model.PmsMemberPrice">
+    <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="product_id" jdbcType="BIGINT" property="productId" />
+    <result column="member_level_id" jdbcType="BIGINT" property="memberLevelId" />
+    <result column="member_price" jdbcType="DECIMAL" property="memberPrice" />
+    <result column="member_level_name" jdbcType="VARCHAR" property="memberLevelName" />
+  </resultMap>
+
+  <resultMap id="PmsSkuStockResultMap" type="com.tuling.tulingmall.model.PmsSkuStock">
+    <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="product_id" jdbcType="BIGINT" property="productId" />
+    <result column="sku_code" jdbcType="VARCHAR" property="skuCode" />
+    <result column="price" jdbcType="DECIMAL" property="price" />
+    <result column="stock" jdbcType="INTEGER" property="stock" />
+    <result column="low_stock" jdbcType="INTEGER" property="lowStock" />
+    <result column="sp1" jdbcType="VARCHAR" property="sp1" />
+    <result column="sp2" jdbcType="VARCHAR" property="sp2" />
+    <result column="sp3" jdbcType="VARCHAR" property="sp3" />
+    <result column="pic" jdbcType="VARCHAR" property="pic" />
+    <result column="sale" jdbcType="INTEGER" property="sale" />
+    <result column="promotion_price" jdbcType="DECIMAL" property="promotionPrice" />
+    <result column="lock_stock" jdbcType="INTEGER" property="lockStock" />
+  </resultMap>
+
+  <resultMap id="PmsProductAttributeValueResultMap" type="com.tuling.tulingmall.model.PmsProductAttributeValue">
+    <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="product_id" jdbcType="BIGINT" property="productId" />
+    <result column="product_attribute_id" jdbcType="BIGINT" property="productAttributeId" />
+    <result column="value" jdbcType="VARCHAR" property="value" />
+  </resultMap>
+
+  <resultMap id="updateInfoMap" type="com.tuling.tulingmall.dto.PmsProductResult" extends="ResultMapWithBLOBs">
+    <result column="cateParentId" jdbcType="BIGINT" property="cateParentId" />
+    <collection property="productLadderList" columnPrefix="ladder_" resultMap="PmsProductLadderResultMap">
+    </collection>
+    <collection property="productFullReductionList" columnPrefix="full_" resultMap="PmsProductFullReductionResultMap">
+    </collection>
+    <collection property="memberPriceList" columnPrefix="member_" resultMap="PmsMemberPriceResultMap">
+    </collection>
+    <collection property="skuStockList" columnPrefix="sku_" resultMap="PmsSkuStockResultMap">
+    </collection>
+    <collection property="productAttributeValueList" columnPrefix="attribute_" resultMap="PmsProductAttributeValueResultMap">
+    </collection>
+    <collection property="subjectProductRelationList" column="{productId=id}" select="selectSubjectProductRelationByProductId"/>
+    <collection property="prefrenceAreaProductRelationList" column="{productId=id}" select="selectPrefrenceAreaProductRelationByProductId"/>
+
+  </resultMap>
+
+  <select id="getUpdateInfo" resultMap="updateInfoMap">
+    SELECT *,
+           pc.parent_id cateParentId,
+           l.id ladder_id,l.product_id ladder_product_id,l.discount ladder_discount,l.count ladder_count,l.price ladder_price,
+           pf.id full_id,pf.product_id full_product_id,pf.full_price full_full_price,pf.reduce_price full_reduce_price,
+           m.id member_id,m.product_id member_product_id,m.member_level_id member_member_level_id,m.member_price member_member_price,m.member_level_name member_member_level_name,
+           s.id sku_id,s.product_id sku_product_id,s.price sku_price,s.low_stock sku_low_stock,s.pic sku_pic,s.sale sku_sale,s.sku_code sku_sku_code,s.sp1 sku_sp1,s.sp2 sku_sp2,s.sp3 sku_sp3,s.stock sku_stock,
+           a.id attribute_id,a.product_id attribute_product_id,a.product_attribute_id attribute_product_attribute_id,a.value attribute_value
+    FROM pms_product p
+           LEFT JOIN pms_product_category pc on pc.id = p.product_category_id
+           LEFT JOIN pms_product_ladder l ON p.id = l.product_id
+           LEFT JOIN pms_product_full_reduction pf ON pf.product_id=p.id
+           LEFT JOIN pms_member_price m ON m.product_id = p.id
+           LEFT JOIN pms_sku_stock s ON s.product_id = p.id
+           LEFT JOIN pms_product_attribute_value a ON a.product_id=p.id
+    WHERE p.id=#{id};
+  </select>
+  <select id="selectSubjectProductRelationByProductId" resultMap="CmsSubjectProductRelationResultMap">
+    select * from tl_mall_normal.cms_subject_product_relation where product_id=#{productId}
+  </select>
+  <select id="selectPrefrenceAreaProductRelationByProductId" resultMap="CmsPrefrenceAreaProductRelationResultMap">
+    select * from tl_mall_normal.cms_prefrence_area_product_relation where product_id=#{productId}
+  </select>
+</mapper>

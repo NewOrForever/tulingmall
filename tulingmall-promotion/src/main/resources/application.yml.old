@@ -1,0 +1,18 @@
+server:
+  port: 8855
+spring:
+  application:
+    name: tulingmall-promotion
+mybatis:
+  mapper-locations:
+    - classpath:dao/*.xml
+    - classpath:mapper/*.xml
+management: #开启SpringBoot Admin的监控
+  endpoints:
+    web:
+      exposure:
+        include: '*'
+  endpoint:
+    health:
+      show-details: always
+

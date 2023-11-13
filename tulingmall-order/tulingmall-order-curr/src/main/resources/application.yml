@@ -1,0 +1,19 @@
+feign:
+  client:
+    config:
+      default:
+        loggerLevel: full
+        requestInterceptors:
+          - com.tuling.tulingmall.ordercurr.feignapi.interceptor.HeaderInterceptor
+        readTimeout: 3000
+        connectTimeout: 3000
+mybatis:
+  configuration:
+    map-underscore-to-camel-case: true
+
+#支付-当面付qrcode存储与访问路径设置
+#trade:
+#  zhifu:
+#    qrcode:
+#      storePath: C:/temp/qr-code
+#      paySuccessCallBack: http://roykingw.free.idcfengye.com/order/paySuccess

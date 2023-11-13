@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.tuling.tulingmall.mapper.PmsProductAttributeCategoryMapper">
+
+    <resultMap id="PmsProductAttributeResultMap" type="com.tuling.tulingmall.model.PmsProductAttribute">
+        <id column="id" jdbcType="BIGINT" property="id" />
+        <result column="product_attribute_category_id" jdbcType="BIGINT" property="productAttributeCategoryId" />
+        <result column="name" jdbcType="VARCHAR" property="name" />
+        <result column="select_type" jdbcType="INTEGER" property="selectType" />
+        <result column="input_type" jdbcType="INTEGER" property="inputType" />
+        <result column="input_list" jdbcType="VARCHAR" property="inputList" />
+        <result column="sort" jdbcType="INTEGER" property="sort" />
+        <result column="filter_type" jdbcType="INTEGER" property="filterType" />
+        <result column="search_type" jdbcType="INTEGER" property="searchType" />
+        <result column="related_status" jdbcType="INTEGER" property="relatedStatus" />
+        <result column="hand_add_status" jdbcType="INTEGER" property="handAddStatus" />
+        <result column="type" jdbcType="INTEGER" property="type" />
+    </resultMap>
+
+    <resultMap id="getListWithAttrMap" type="com.tuling.tulingmall.dto.PmsProductAttributeCategoryItem">
+        <id column="id" jdbcType="BIGINT" property="id" />
+        <result column="name" jdbcType="VARCHAR" property="name" />
+        <result column="attribute_count" jdbcType="INTEGER" property="attributeCount" />
+        <result column="param_count" jdbcType="INTEGER" property="paramCount" />
+        <collection property="productAttributeList" columnPrefix="attr_" resultMap="PmsProductAttributeResultMap">
+        </collection>
+    </resultMap>
+
+    <select id="getListWithAttr" resultMap="getListWithAttrMap">
+        SELECT
+            pac.id,
+            pac.name,
+            pa.id attr_id,
+            pa.name attr_name
+        FROM
+            pms_product_attribute_category pac
+                LEFT JOIN pms_product_attribute pa ON pac.id = pa.product_attribute_category_id
+                AND pa.type=1;
+    </select>
+</mapper>

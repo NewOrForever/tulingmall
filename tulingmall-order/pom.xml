@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<parent>
+		<groupId>com.tuling</groupId>
+		<artifactId>tuling-mall</artifactId>
+		<version>0.0.5</version>
+	</parent>
+	<artifactId>tulingmall-order</artifactId>
+	<name>tulingmall-order</name>
+	<packaging>pom</packaging>
+	<description>订单服务</description>
+
+	<modules>
+		<module>tulingmall-order-curr</module>
+		<module>tulingmall-order-history</module>
+	</modules>
+
+</project>

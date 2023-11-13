@@ -1,0 +1,12 @@
+server:
+  port: 8844
+spring:
+  profiles:
+    active: cluster
+#    active: local
+logging:
+  config: classpath:logback-spring.xml
+mybatis:
+  mapper-locations:
+    - classpath:dao/*.xml
+    - classpath:mapper/*.xml
