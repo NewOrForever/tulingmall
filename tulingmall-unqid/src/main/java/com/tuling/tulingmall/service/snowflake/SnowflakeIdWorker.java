@@ -1,5 +1,7 @@
 package com.tuling.tulingmall.service.snowflake;
 
+import java.util.Random;
+
 /**
  * Twitter_Snowflake
  * SnowFlake的结构如下(每部分用-分开):
@@ -21,7 +23,7 @@ public class SnowflakeIdWorker {
     private final long workerIdBits = 5L;
 
     /**
-     * 数据标识id所占的位数
+     * 数据标识id所占的位数 - 数据中心
      */
     private final long datacenterIdBits = 5L;
 
@@ -72,6 +74,7 @@ public class SnowflakeIdWorker {
 
     /**
      * 毫秒内序列(0~4095)
+     * 12位 -> 4096
      */
     private long sequence = 0L;
 
@@ -79,6 +82,8 @@ public class SnowflakeIdWorker {
      * 上次生成ID的时间戳
      */
     private long lastTimestamp = -1L;
+
+    private final Random random = new Random();
 
     //==============================Constructors=====================================
 
@@ -102,14 +107,19 @@ public class SnowflakeIdWorker {
     // ==============================Methods==========================================
 
     /**
-     * 获得下一个ID (该方法是线程安全的)
+     * 获得下一个ID (该方法是线程安全的) - synchronized
      *
      * @return SnowflakeId
      */
     public synchronized long nextId() {
         long timestamp = System.currentTimeMillis();
 
-        //如果当前时间小于上一次ID生成的时间戳，说明系统时钟回退过这个时候应当抛出异常
+        // 如果当前时间小于上一次ID生成的时间戳，说明系统时钟回退过这个时候应当抛出异常
+        /**
+         * 这块代码其实在对于时钟回拨的问题上已经进行了简化
+         * 当出现时钟回拨时直接抛出异常
+         * 实际美团的做法是对于时钟回拨的情况下，如果时钟回拨的时间小于5ms则会再做一层重试，如果重试后还是时钟回拨则抛出异常
+          */
         if (timestamp < lastTimestamp) {
             throw new RuntimeException(
                     String.format("Clock moved backwards.  Refusing to generate id for %d milliseconds", lastTimestamp - timestamp));
@@ -121,13 +131,17 @@ public class SnowflakeIdWorker {
             sequence = (sequence + 1) & sequenceMask;
             //毫秒内序列溢出
             if (sequence == 0) {
+                // 下一毫秒开始序列号随机处理，避免低并发下序列号分布不均匀 -> 如果根据 id 进行分库分表，就会导致数据倾斜分布不均匀
+                sequence = random.nextInt(100);
                 //阻塞到下一个毫秒,获得新的时间戳
                 timestamp = tilNextMillis(lastTimestamp);
             }
         }
         //时间戳改变，毫秒内序列重置
         else {
-            sequence = 0L;
+            // 下一毫秒开始序列号随机处理，避免低并发下序列号分布不均匀 -> 如果根据 id 进行分库分表，就会导致数据倾斜分布不均匀
+            sequence = random.nextInt(100);
+//            sequence = 0L;
         }
 
         //上次生成ID的时间戳
@@ -158,6 +172,11 @@ public class SnowflakeIdWorker {
      * 测试
      */
     public static void main(String[] args) {
+        /**
+         * workerId - 机器id，datacenterId - 数据中心id
+         * 一个机房一个datacenterId，一个机房多台机器，每台机器一个workerId
+         * 所以发号服务支持的机器数量为 2^5 * 2^5 = 1024
+         */
         SnowflakeIdWorker idWorker = new SnowflakeIdWorker(1, 1);
         for (int i = 0; i < 10; i++) {
             long id = idWorker.nextId();

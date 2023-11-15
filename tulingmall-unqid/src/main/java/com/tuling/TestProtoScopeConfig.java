@@ -8,7 +8,7 @@ import org.springframework.context.annotation.*;
 /**
  * ClassName:TestProtoScopeConfig
  * Package:com.tuling
- * Description:
+ * Description: 该类和商城项目无关，只是为了测试原型bean 的使用
  *
  * @Date:2023/11/13 10:15
  * @Author:qs@1.com

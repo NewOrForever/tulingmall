@@ -64,6 +64,7 @@ public class SegmentIDGenImpl implements IDGen {
         // 确保加载到kv后才初始化成功
         updateCacheFromDb();
         initOK = true;
+        // 创建线程每分钟更新一次cache
         updateCacheFromDbAtEveryMinute();
         return initOK;
     }
@@ -94,7 +95,9 @@ public class SegmentIDGenImpl implements IDGen {
             if (dbTags == null || dbTags.isEmpty()) {
                 return;
             }
+            // cache 中的已有的tags
             List<String> cacheTags = new ArrayList<String>(cache.keySet());
+            // db中多有的tags
             Set<String> insertTagsSet = new HashSet<>(dbTags);
             Set<String> removeTagsSet = new HashSet<>(cacheTags);
             //db中新加的tags灌进cache
@@ -139,7 +142,9 @@ public class SegmentIDGenImpl implements IDGen {
         }
         if (cache.containsKey(key)) {
             SegmentBuffer buffer = cache.get(key);
+            // buffer 号段缓存初始化
             if (!buffer.isInitOk()) {
+                // 每个业务类型能并发执行
                 synchronized (buffer) {
                     if (!buffer.isInitOk()) {
                         try {
@@ -161,6 +166,9 @@ public class SegmentIDGenImpl implements IDGen {
         StopWatch sw = new Slf4JStopWatch();
         SegmentBuffer buffer = segment.getBuffer();
         LeafAlloc leafAlloc;
+        // 新业务类型或是服务重启后更新号段
+        // 服务重启后，buffer.isInitOk() 为 false，buffer.getUpdateTimestamp() 为 0
+        // 服务重启后，以前的号段不管是否用完，都会进入下个新的号段（比如 step 1000，用了 500 -> 服务重启 -> 从 1001 开始）
         if (!buffer.isInitOk()) {
             leafAlloc = dao.updateMaxIdAndGetLeafAlloc(key);
             buffer.setStep(leafAlloc.getStep());
@@ -171,6 +179,12 @@ public class SegmentIDGenImpl implements IDGen {
             buffer.setStep(leafAlloc.getStep());
             buffer.setMinStep(leafAlloc.getStep());//leafAlloc中的step为DB中的step
         } else {
+            /**
+             * 15 分终内使用达到阈值时，步长翻倍
+             * 30 分钟内使用达到阈值时，步长不变
+             * 超过 30 分钟，nextStep/2 >= minStep 时，步长减半，否则步长不变
+             * db 中的step（设置好后是不变的） 为最小步长，即 minStep
+             */
             long duration = System.currentTimeMillis() - buffer.getUpdateTimestamp();
             int nextStep = buffer.getStep();
             if (duration < SEGMENT_DURATION) {
@@ -190,8 +204,8 @@ public class SegmentIDGenImpl implements IDGen {
             temp.setStep(nextStep);
             leafAlloc = dao.updateMaxIdByCustomStepAndGetLeafAlloc(temp);
             buffer.setUpdateTimestamp(System.currentTimeMillis());
-            buffer.setStep(nextStep);
-            buffer.setMinStep(leafAlloc.getStep());//leafAlloc的step为DB中的step
+            buffer.setStep(nextStep); // nextStep为根据duration计算出来的步长
+            buffer.setMinStep(leafAlloc.getStep()); //leafAlloc的step为DB中的step
         }
         // must set value before set max
         long value = leafAlloc.getMaxId() - buffer.getStep();
@@ -203,14 +217,17 @@ public class SegmentIDGenImpl implements IDGen {
 
     public Result getIdFromSegmentBuffer(final SegmentBuffer buffer) {
         while (true) {
-            buffer.rLock().lock();
+            buffer.rLock().lock(); // 读锁，没有写锁时，可以多个线程同时读保证了性能，有写锁时阻塞
             try {
                 final Segment segment = buffer.getCurrent();
                 /*当前号段已下发10%时，如果下一个号段未更新，则另启一个更新线程去更新下一个号段*/
+                // compareAndSet 保证只有一个线程去更新下一个号段，阻塞，当某个线程执行完后 threadRunning 原子变量的值为 true，其他线程不会再去执行更新下个号段
+                // if 判断结果为 false -> 直接取下个 id 值
                 if (!buffer.isNextReady() && (segment.getIdle() < 0.9 * segment.getStep()) && buffer.getThreadRunning().compareAndSet(false, true)) {
                     service.execute(new Runnable() {
                         @Override
                         public void run() {
+                            // 当前为号段 0 -> next 为号段 1 -> 当前为号段 1 -> next 为号段 0 ...... 依此循环
                             Segment next = buffer.getSegments()[buffer.nextPos()];
                             boolean updateOk = false;
                             try {
@@ -232,6 +249,7 @@ public class SegmentIDGenImpl implements IDGen {
                         }
                     });
                 }
+                // 为了避免竞对，能否这里增加的值随机一下，比如 1-100 之间的随机数？？？
                 long value = segment.getValue().getAndIncrement();
                 if (value < segment.getMax()) {
                     return new Result(value, Status.SUCCESS);
@@ -239,9 +257,11 @@ public class SegmentIDGenImpl implements IDGen {
             } finally {
                 buffer.rLock().unlock();
             }
-            waitAndSleep(buffer);
-            buffer.wLock().lock();
+
+            waitAndSleep(buffer); // 避免更新号段任务没完成
+            buffer.wLock().lock(); // 写锁，保证只有一个线程切换号段
             try {
+                // 双重检查，防止切换号段后，其他线程继续去切换号段
                 final Segment segment = buffer.getCurrent();
                 long value = segment.getValue().getAndIncrement();
                 if (value < segment.getMax()) {

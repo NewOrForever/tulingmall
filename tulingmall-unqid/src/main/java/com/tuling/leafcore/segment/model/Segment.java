@@ -2,6 +2,9 @@ package com.tuling.leafcore.segment.model;
 
 import java.util.concurrent.atomic.AtomicLong;
 
+/**
+ * 号段模型
+ */
 public class Segment {
     private AtomicLong value = new AtomicLong(0);
     private volatile long max;

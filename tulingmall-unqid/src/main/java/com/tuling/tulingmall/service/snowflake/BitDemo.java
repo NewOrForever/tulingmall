@@ -10,7 +10,7 @@ public class BitDemo {
         System.out.println(aa);
         System.out.println("时间戳位数" + aa.length());
         while (aa.length() < 64) {
-            aa = "0" + aa;
+            aa = "0" + aa; // 不足64位前面补0
         }
         System.out.println("//时间戳------------------------------------//");
         System.out.println(aa);
