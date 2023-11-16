@@ -20,12 +20,14 @@ import com.tuling.tulingmall.ordercurr.model.*;
 import com.tuling.tulingmall.ordercurr.service.OmsPortalOrderService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DuplicateKeyException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.sql.SQLIntegrityConstraintViolationException;
 import java.util.*;
 
 /**
@@ -225,7 +227,7 @@ public class OmsPortalOrderServiceImpl implements OmsPortalOrderService {
 
         //计算order_item的实付金额
         handleRealAmount(orderItemList);
-        //todo 分布式事务 进行库存锁定
+        // todo 分布式事务 进行库存锁定
         CommonResult lockResult = pmsProductStockFeignApi.lockStock(cartPromotionItemList);
         if(lockResult.getCode() ==ResultCode.FAILED.getCode()) {
             log.warn("远程调用锁定库存失败");

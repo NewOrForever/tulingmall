@@ -81,6 +81,10 @@ public class StockManageServiceImpl implements StockManageService {
 
             for (CartPromotionItem cartPromotionItem : cartPromotionItemList) {
                 PmsSkuStock skuStock = skuStockMapper.selectByPrimaryKey(cartPromotionItem.getProductSkuId());
+                // TODO 待优化，用写 sql 的方式来来防止 ABA 问题
+                // update set a=a+1 where id=?
+                // 如果直接先计算好数据然后直接更新 -> 高并发时会有数据不一致问题，数据会被覆盖掉
+                // A 线程 和 B 线程进来查询锁定的库存都是10，各自加1，A 先提交 -> 数据库中变成11 -> B再提交，库存锁定还是 11，但是实际应该变成12
                 skuStock.setLockStock(skuStock.getLockStock() + cartPromotionItem.getQuantity());
                 skuStockMapper.updateByPrimaryKeySelective(skuStock);
             }

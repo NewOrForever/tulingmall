@@ -19,6 +19,7 @@ import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.rocketmq.spring.core.RocketMQTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DuplicateKeyException;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
@@ -54,7 +55,24 @@ public class OmsPortalOrderController {
     @ResponseBody
     public CommonResult generateOrder(@RequestBody OrderParam orderParam,
                                       @RequestHeader("memberId") Long memberId) throws BusinessException {
-        return portalOrderService.generateOrder(orderParam,memberId);
+        CommonResult commonResult = null;
+        try {
+            commonResult = portalOrderService.generateOrder(orderParam, memberId);
+        } catch (DuplicateKeyException e) {
+            /**
+             * 利用数据库的唯一索引，防止重复提交订单
+             * 这种方式很方便，但是如果创建订单的接口中有很多跨服务的调用会不会有性能的问题？
+             * 有没有更好的解决方案？
+             * 使用redis -> 进入提交订单页面时，生成一个唯一的uuid，将uuid存入redis中，并返回给页面 -> 提交订单时，将uuid传入后台
+             * -> preHandler中校验uuid是否存在，存在则删除uuid 并放行去执行订单创建操作，不存在则根据实际情况返回错误信息给前端
+             */
+            // 根据order id 查询订单和订单详情
+            /*Map<String, Object> data = new HashMap<>();
+            data.put("order", null);
+            data.put("orderItemList", null);*/
+            return CommonResult.success(null, "订单创建成功");
+        }
+        return commonResult;
     }
 
 //    @ApiOperation("根据购物车信息生成订单")
