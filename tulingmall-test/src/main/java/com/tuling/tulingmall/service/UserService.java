@@ -28,8 +28,9 @@ public class UserService {
         toUpdate.setId(user.getId());
         toUpdate.setVersion(user.getVersion());
 //        int affectRowCount = sqlSessionTemplate.update("com.tuling.tulingmall.mapper.UserMapper.updateWithVersionById", user);
-        int affectRowCount = sqlSessionTemplate.update("com.tuling.tulingmall.mapper.UserMapper.updateCountWithVersionById", toUpdate);
+//        int affectRowCount = sqlSessionTemplate.update("com.tuling.tulingmall.mapper.UserMapper.updateCountWithVersionById", toUpdate);
 //        int affectRowCount = sqlSessionTemplate.update("com.tuling.tulingmall.mapper.UserMapper.updateCountById", toUpdate);
+        userMapper.updateCountById(5L)
         System.out.println("影响行数：" + affectRowCount);
     }
 }
