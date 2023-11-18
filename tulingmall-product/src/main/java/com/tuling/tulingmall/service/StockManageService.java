@@ -5,6 +5,7 @@ import com.tuling.tulingmall.common.api.CommonResult;
 import com.tuling.tulingmall.domain.CartPromotionItem;
 import com.tuling.tulingmall.domain.StockChanges;
 import com.tuling.tulingmall.model.OmsOrderItem;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.List;
@@ -58,5 +59,6 @@ public interface StockManageService {
 
     CommonResult reduceStock(List<StockChanges> stockChangesList);
 
+    @Transactional
     CommonResult recoverStock(List<StockChanges> stockChangesList);
 }

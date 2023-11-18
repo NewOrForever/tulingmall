@@ -28,6 +28,7 @@
         <module>tulingmall-redis-comm</module>
         <module>tulingmall-redis-multi</module>
         <module>tulingmall-sk</module>
+        <module>tulingmall-canal</module>
         <module>tulingmall-test</module>
     </modules>
 

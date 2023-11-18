@@ -50,10 +50,25 @@ public class RefreshPromotionCache {
         if(promotionRedisKey.isAllowLocalCache()){
             log.info("检查本地缓存[promotionCache] 是否需要刷新...");
             final String brandKey = promotionRedisKey.getBrandKey();
+            /**
+             * TODO 这个判断条件有必要吗？有必要等到本地缓存失效才去刷新吗？
+             * 如果 db 中的数据有变化 -> 那么本地缓存也应该要删除
+             * canal 监听 binlog -> 往 mq 发送消息 -> mq 消费者 -> 删除本地缓存 ？？？
+             *
+             * 实际应该根据业务场景和对数据不一致的容忍度来决定使用那种方案：
+             * 1. 容忍度比较宽松：定时刷新本地缓存（本地缓存失效的情况下才会去远程拉取）
+             * 2. 容忍度不是很严格：每次定时刷新本地缓存时都会去远程拉取
+             * 3. 容忍度很严格，对数据一致性要求较高：canal 监听 binlog -> 往 mq 发送消息 -> mq 消费者 -> 删除本地缓存 
+             */
             if(null == promotionCache.getIfPresent(brandKey)||null == promotionCacheBak.getIfPresent(brandKey)){
                 log.info("本地缓存[promotionCache] 需要刷新");
                 HomeContentResult result = homeService.getFromRemote();
                 if(null != result){
+                    /**
+                     * 正式缓存只有无效才会被重新写入
+                     * TODO db中的数据有变化时 -> 如何是本地缓存失效？
+                     * canal 监听 binlog -> 往 mq 发送消息 -> mq 消费者 -> 删除本地缓存 ？？？
+                     */
                     if(null == promotionCache.getIfPresent(brandKey)) {
                         promotionCache.put(brandKey,result);
                         log.info("刷新本地缓存[promotionCache] 成功");

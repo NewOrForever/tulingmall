@@ -1,0 +1,64 @@
+server:
+  port: 8856
+spring:
+  application:
+      name: tulingmall-canal
+  data:
+    elasticsearch:
+      rest:
+        uris: 192.168.65.219:9300,192.168.65.110:9300,192.168.65.113:9300
+      client:
+        reactive:
+          password: es
+          username: es
+  redis:
+    cluster:
+      nodes: 192.168.65.153:6379,192.168.65.222:6379,192.168.65.218:6379,192.168.65.186:6379,192.168.65.111:6379,192.168.65.162:6379
+    lettuce:
+      pool:
+        max-active: 8 # 连接池最大连接数（使用负值表示没有限制）
+        max-wait: -1ms # 连接池最大阻塞等待时间（使用负值表示没有限制）
+        max-idle: 8 # 连接池中的最大空闲连接
+        min-idle: 0 # 连接池中的最小空闲连接
+      timeout: 3000ms # 连接超时时间（毫秒）
+    password: tlmall
+  redisSingle:
+    host: 192.168.65.190
+    port: 6379
+    lettuce:
+      pool:
+        max-active: 8 # 连接池最大连接数（使用负值表示没有限制）
+        max-wait: -1 # 连接池最大阻塞等待时间（使用负值表示没有限制）
+        max-idle: 8 # 连接池中的最大空闲连接
+        min-idle: 0 # 连接池中的最小空闲连接
+      timeout: 3000ms # 连接超时时间（毫秒）
+canal:
+  server:
+    ip: 192.168.65.201
+    port: 8888
+#  product:
+#    destination: product
+#    indexName: product_db
+#    batchSize: 1000
+  promotion:
+    destination: promotion
+    batchSize: 1000
+  seckill:
+    destination: seckill
+    batchSize: 1000
+feign:
+  client:
+    config:
+      default:
+        loggerLevel: full
+        readTimeout: 3000
+        connectTimeout: 3000
+
+#rocketmq配置
+#rocketmq:
+#  name-server: 192.168.65.164:9876,192.168.65.194:9876,192.168.65.161:9876,192.168.65.148:9876,192.168.65.224:9876,192.168.65.215:9876, #连接超时时间
+#  producer:
+#    send-message-timeout: 30000 #发送消息超时时间
+#  canal:
+#    topic: productDetailChange
+#    group: cache-sync

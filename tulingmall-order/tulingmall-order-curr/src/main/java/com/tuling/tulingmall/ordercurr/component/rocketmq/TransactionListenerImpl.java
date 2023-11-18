@@ -24,11 +24,13 @@ import java.util.Date;
 /**
  * 订单事务消息监听器
  * 通过事务消息机制完成订单生成。注意：这个消息只是用来发给下游服务进行订单取消用。
+ * 这种方式是反向通知：下游服务通过事务消息的回查机制，来检查订单是否超时未支付，如果超时未支付，则发送取消订单的消息。
+ * 正向通知：下游服务通过事务消息的回查机制，来检查订单是否支付成功，如果支付成功，则发送订单支付成功的消息。
  */
 @Slf4j
 @RocketMQTransactionListener()
 public class TransactionListenerImpl implements RocketMQLocalTransactionListener {
-    //由于要做微服务负载均衡，检查次数就不能在本地记录了。
+    //由于要做微服务负载均衡，检查次数就不能在本地记录了 -> 用Redis记录
 //    private ConcurrentHashMap<String, Integer> localTrans = new ConcurrentHashMap<>();
     //回查次数可以根据订单超时事件定制。普通订单超时时间来自于oms_order_settings表的normal_order_overtime表。
     //这里用5次做模拟。
@@ -91,6 +93,8 @@ public class TransactionListenerImpl implements RocketMQLocalTransactionListener
                     log.warn("-----RocketMQ订单事务回查失败, 没有Redis记录");
                     return RocketMQLocalTransactionState.ROLLBACK;
                 }
+                // redis 记录了已经回查的次数 - 订单超时未支付时间取消时间 15min，每次回查间隔时间 6s，最大回查次数 15次
+                // 怎么修改间隔时间或者能不能每次回查都修改间隔时间
                 int retryTimes = (int)redisRecord;
                 //1、超过最大检查次数，表示订单超时未支付，关闭订单
                 if(retryTimes >= maxTryMums){

@@ -161,8 +161,24 @@ public class HomePromotionServiceImpl implements HomePromotionService {
         final String recProductKey = promotionRedisKey.getRecProductKey();
         List<PmsProduct> recommendProducts = redisOpsExtUtil.getListAll(recProductKey, PmsProduct.class);
         if(CollectionUtils.isEmpty(recommendProducts)){
+            /**
+             * 这把分布式锁我觉得还是要加的，使用 {@link org.redisson.RedissonLock}
+             * 如果入口服务的本地缓存失效（虽然双缓存+定时刷新机制能基本保证备份缓存不会失效但是万一呢？）
+             * 并发量大的情况下，会导致大量请求直接打到数据库上，所以还是考虑加下锁吧（低并发加不加锁性能也不会有多大影响，万一高并发进来不是就能避免全都打到数据库么）
+             *
+             * 另外为了保证缓存和数据库的数据一致性，项目中使用 canal 监听binlog 变化，然后通过 mq 发送消息删除 redis 缓存的方案（cache aside）
+             * 缓存删除了，数据库不就没保护了么，避免高并发直接打到数据库，所以还是要加锁的
+              */
             redisDistrLock.lock(promotionRedisKey.getDlRecProductKey(),promotionRedisKey.getDlTimeout());
             try {
+                // TODO update by sq: 2023/11/18  双重检测提高性能
+                recommendProducts = redisOpsExtUtil.getListAll(recProductKey, PmsProduct.class);
+                if(!CollectionUtils.isEmpty(recommendProducts)){
+                    log.info("人气推荐商品信息已在缓存，键{}" ,recProductKey);
+                    result.setHotProductList(recommendProducts);
+                    return;
+                }
+
                 PageHelper.startPage(0,ConstantPromotion.HOME_RECOMMEND_PAGESIZE,"sort desc");
                 SmsHomeRecommendProductExample example2 = new SmsHomeRecommendProductExample();
                 example2.or().andRecommendStatusEqualTo(ConstantPromotion.HOME_PRODUCT_RECOMMEND_YES);

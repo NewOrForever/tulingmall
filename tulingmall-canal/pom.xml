@@ -1,0 +1,157 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <artifactId>tulingmall-canal</artifactId>
+    <packaging>jar</packaging>
+
+    <name>tulingmall-canal</name>
+    <description>商城Canal数据同步</description>
+
+    <parent>
+        <groupId>com.tuling</groupId>
+        <artifactId>tuling-mall</artifactId>
+        <version>0.0.5</version>
+    </parent>
+
+    <dependencies>
+        <dependency>
+            <groupId>com.tuling</groupId>
+            <artifactId>tulingmall-common</artifactId>
+            <exclusions>
+                <exclusion>
+                    <artifactId>druid-spring-boot-starter</artifactId>
+                    <groupId>com.alibaba</groupId>
+                </exclusion>
+                <exclusion>
+                    <groupId>com.github.pagehelper</groupId>
+                    <artifactId>pagehelper-spring-boot-starter</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>org.springframework.data</groupId>
+                    <artifactId>spring-data-commons</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+<!--        <dependency>
+            <groupId>com.tuling</groupId>
+            <artifactId>tulingmall-core</artifactId>
+            <exclusions>
+                <exclusion>
+                    <artifactId>dynamic-datasource-spring-boot-starter</artifactId>
+                    <groupId>com.baomidou</groupId>
+                </exclusion>
+            </exclusions>
+        </dependency>-->
+        <!--加入springcloud alibaba-->
+        <dependency>
+            <groupId>com.alibaba.cloud</groupId>
+            <artifactId>spring-cloud-starter-alibaba-nacos-discovery</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.alibaba.cloud</groupId>
+            <artifactId>spring-cloud-starter-alibaba-nacos-config</artifactId>
+        </dependency>
+        <!-- feign -->
+        <dependency>
+            <groupId>org.springframework.cloud</groupId>
+            <artifactId>spring-cloud-starter-openfeign</artifactId>
+        </dependency>
+
+        <dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter</artifactId>
+		</dependency>
+
+        <!-- 加入Redis -->
+<!--		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-data-redis</artifactId>
+		</dependency>-->
+        <dependency>
+            <groupId>com.tuling</groupId>
+            <artifactId>tulingmall-redis-multi</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-pool2</artifactId>
+            <version>2.4.3</version>
+        </dependency>
+
+		<!-- 加入rocketmq -->
+<!--		<dependency>
+			<groupId>org.apache.rocketmq</groupId>
+			<artifactId>rocketmq-spring-boot-starter</artifactId>
+			<version>2.0.4</version>
+		</dependency>-->
+        <!-- 引入canal -->
+        <dependency>
+            <groupId>com.alibaba.otter</groupId>
+            <artifactId>canal.client</artifactId>
+            <version>1.1.4</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.apache.rocketmq</groupId>
+                    <artifactId>rocketmq-client</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-data-elasticsearch</artifactId>
+        </dependency>
+<!--        <dependency>
+            <groupId>com.alibaba.otter</groupId>
+            <artifactId>canal.protocol</artifactId>
+            <version>1.1.6</version>
+        </dependency>-->
+        <!--mybatis-->
+        <!--mall中MBG生成模块
+        <dependency>
+            <groupId>com.tuling</groupId>
+            <artifactId>tulingmall-mbg</artifactId>
+            <exclusions>
+                <exclusion>
+                    <artifactId>druid-spring-boot-starter</artifactId>
+                    <groupId>com.alibaba</groupId>
+                </exclusion>
+                <exclusion>
+                    <artifactId>pagehelper-spring-boot-starter</artifactId>
+                    <groupId>com.github.pagehelper</groupId>
+                </exclusion>
+                <exclusion>
+                    <artifactId>hutool-all</artifactId>
+                    <groupId>cn.hutool</groupId>
+                </exclusion>
+                <exclusion>
+                    <artifactId>lombok</artifactId>
+                    <groupId>org.projectlombok</groupId>
+                </exclusion>
+            </exclusions>
+        </dependency> -->
+        <dependency>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok</artifactId>
+        </dependency>
+    </dependencies>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-maven-plugin</artifactId>
+                <version>2.3.2.RELEASE</version>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>repackage</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+    </build>
+
+
+</project>

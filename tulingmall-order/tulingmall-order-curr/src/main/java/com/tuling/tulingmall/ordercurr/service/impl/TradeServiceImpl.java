@@ -279,6 +279,7 @@ public class TradeServiceImpl implements TradeService {
                 log.info("filePath:" + tradePayProp.getStorePath()+ filePath);
                 //写到图片当中
                 ZxingUtils.getQRCodeImge(response.getQrCode(), 256, tradePayProp.getStorePath()+filePath);
+                // /static/qrcode/app/tulingmall/qr-code/alipay/qr-12345678.png
                 return tradePayProp.getHttpBasePath() + filePath;
             case FAILED:
                 log.error("支付宝预下单失败!!!");

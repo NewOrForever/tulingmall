@@ -136,6 +136,7 @@ public class HomeServiceImpl implements HomeService {
         HomeContentResult result = null;
         /*从redis获取*/
         if(promotionRedisKey.isAllowRemoteCache()){
+            // TODO 可以考虑使用pipeline优化减小网络开销
             recommendBrandList = redisOpsUtil.getListAll(promotionRedisKey.getBrandKey(), PmsBrand.class);
             smsHomeAdvertises = redisOpsUtil.getListAll(promotionRedisKey.getHomeAdvertiseKey(), SmsHomeAdvertise.class);
             newProducts = redisOpsUtil.getListAll(promotionRedisKey.getNewProductKey(), PmsProduct.class);
