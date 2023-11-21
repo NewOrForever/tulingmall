@@ -40,8 +40,11 @@ public class SecKillData implements IProcessCanalData {
     @Autowired
     private PromotionRedisKey promotionRedisKey;
 
+//    @Autowired
+//    private RedisClusterUtil homeRedisOpsExtUtil;
+
     @Autowired
-    private RedisClusterUtil homeRedisOpsExtUtil;
+    private RedisSingleUtil homeRedisOpsExtUtil;
 
     @Autowired
     private RedisSingleUtil secKillStockUtil;

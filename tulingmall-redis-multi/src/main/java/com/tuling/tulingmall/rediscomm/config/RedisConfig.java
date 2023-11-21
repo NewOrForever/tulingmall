@@ -11,6 +11,7 @@ import org.apache.commons.pool2.impl.GenericObjectPoolConfig;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -51,6 +52,7 @@ public class RedisConfig {
     private String min_idle;
 
     @Bean("redisClusterPool")
+    @ConditionalOnProperty(name = "spring.redis.cluster.nodes")
     @Primary
     @ConfigurationProperties(prefix = "spring.redis.cluster.lettuce.pool")
     public GenericObjectPoolConfig redisClusterPool() {
@@ -58,6 +60,7 @@ public class RedisConfig {
     }
 
     @Bean("redisClusterConfig")
+    @ConditionalOnProperty(name = "spring.redis.cluster.nodes")
     @Primary
     public RedisClusterConfiguration redisClusterConfig() {
 
@@ -70,6 +73,7 @@ public class RedisConfig {
     }
 
     @Bean("redisFactoryCluster")
+    @ConditionalOnProperty(name = "spring.redis.cluster.nodes")
     @Primary
     public LettuceConnectionFactory lettuceConnectionFactory(
             @Qualifier("redisClusterPool") GenericObjectPoolConfig redisPool,
@@ -79,6 +83,7 @@ public class RedisConfig {
     }
 
     @Bean("redisClusterTemplate")
+    @ConditionalOnProperty(name = "spring.redis.cluster.nodes")
     @Primary
     public RedisTemplate redisClusterTemplate(
             @Qualifier("redisFactoryCluster") RedisConnectionFactory redisConnectionFactory) {
@@ -86,6 +91,7 @@ public class RedisConfig {
     }
 
     @Bean
+    @ConditionalOnProperty(name = "spring.redis.cluster.nodes")
     public RedisClusterUtil redisOpsUtil(){
         return new RedisClusterUtil();
     }
@@ -103,6 +109,7 @@ public class RedisConfig {
     @Bean("redisSingleConfig")
     public RedisStandaloneConfiguration redisSingleConfig() {
         RedisStandaloneConfiguration redisConfig = new RedisStandaloneConfiguration(host,Convert.toInt(port));
+        redisConfig.setPassword(environment.getProperty("spring.redisSingle.password"));
         return redisConfig;
     }
 

@@ -4,21 +4,25 @@ spring:
   cloud:
     nacos:
       config:
-        server-addr: 192.168.65.206:8848,192.168.65.209:8848,192.168.65.210:8848 #配置中心的地址
+        namespace: ace67433-6b98-4de3-acfe-9eb4b0f059e4
+#        server-addr: 192.168.65.206:8848,192.168.65.209:8848,192.168.65.210:8848 #配置中心的地址
+        server-addr: 123.60.150.23:8848
         file-extension: yml #配置文件结尾的配置
         shared-configs[0]:
           data-id: tulingmall-nacos.yml
           group: DEFAULT_GROUP
           refresh: true
+#        shared-configs[1]:
+#          data-id: tulingmall-redis.yml # redis服务集群配置
+#          group: DEFAULT_GROUP
+#          refresh: true
         shared-configs[1]:
-          data-id: tulingmall-redis.yml # redis服务集群配置
-          group: DEFAULT_GROUP
-          refresh: true
-        shared-configs[2]:
           data-id: tulingmall-redis-key-dev.yml #在多个服务之间共享redis的key
           group: DEFAULT_GROUP
           refresh: true
       discovery:
-        server-addr: 192.168.65.206:8848,192.168.65.209:8848,192.168.65.210:8848
+#        server-addr: 192.168.65.206:8848,192.168.65.209:8848,192.168.65.210:8848
+        server-addr: 123.60.150.23:8848
+        namespace: ace67433-6b98-4de3-acfe-9eb4b0f059e4
   profiles:
     active: dev

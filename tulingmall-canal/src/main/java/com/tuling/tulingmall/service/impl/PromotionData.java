@@ -5,6 +5,7 @@ import com.alibaba.otter.canal.protocol.CanalEntry;
 import com.alibaba.otter.canal.protocol.Message;
 import com.tuling.tulingmall.config.PromotionRedisKey;
 import com.tuling.tulingmall.rediscomm.util.RedisClusterUtil;
+import com.tuling.tulingmall.rediscomm.util.RedisSingleUtil;
 import com.tuling.tulingmall.service.IProcessCanalData;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.StringUtils;
@@ -40,8 +41,11 @@ public class PromotionData implements IProcessCanalData {
     @Autowired
     private PromotionRedisKey promotionRedisKey;
 
+    // 暂未搭建Redis集群，先使用单机版
+//    @Autowired
+//    private RedisClusterUtil redisOpsExtUtil;
     @Autowired
-    private RedisClusterUtil redisOpsExtUtil;
+    private RedisSingleUtil redisOpsExtUtil;
 
     @Value("${canal.promotion.subscribe:server}")
     private String subscribe;
@@ -52,6 +56,30 @@ public class PromotionData implements IProcessCanalData {
     @PostConstruct
     @Override
     public void connect() {
+        /**
+         * @see MyTestData 测试下这个 while true
+         * 类似这种循环我好像记得在 Zookeeper 还是 RabbitMQ 的学习笔记中我写过呢
+         * 这个开线程while true 循环执行 我暂时还是不太能 hold 住，得后面并发学习后才能使用
+         *   while (flag) {
+         *             try {
+         *                 connector.connect();
+         *                 connector.subscribe(filter);
+         *                 while (flag) {
+         *                     Message message = connector.getWithoutAck(batchSize, timeout, unit);
+         *                     log.info("获取消息 {}", message);
+         *                     long batchId = message.getId();
+         *                     if (message.getId() != -1 && message.getEntries().size() != 0) {
+         *                         messageHandler.handleMessage(message);
+         *                     }
+         *                     connector.ack(batchId);
+         *                 }
+         *             } catch (Exception e) {
+         *                 log.error("canal client 异常", e);
+         *             } finally {
+         *                 connector.disconnect();
+         *             }
+         *         }
+         */
         tableMapKey.put(SMS_HOME_ADVERTISE,promotionRedisKey.getHomeAdvertiseKey());
         tableMapKey.put(SMS_HOME_BRAND,promotionRedisKey.getBrandKey());
         tableMapKey.put(SMS_HOME_NEW_PRODUCT,promotionRedisKey.getNewProductKey());
@@ -70,6 +98,11 @@ public class PromotionData implements IProcessCanalData {
         connector.disconnect();
     }
 
+    /**
+     * 写定时任务，每隔5秒执行一次去手动检查Canal服务器是否有数据变更
+     * 这样做会不会导致数据变更的延迟？？？
+     * canal client 是否能够订阅数据变更的通知？？？
+     */
     @Async
     @Scheduled(initialDelayString="${canal.promotion.initialDelay:5000}",fixedDelayString = "${canal.promotion.fixedDelay:5000}")
     @Override
@@ -93,6 +126,10 @@ public class PromotionData implements IProcessCanalData {
                                 || entry.getEntryType() == CanalEntry.EntryType.TRANSACTIONEND) {
                             continue;
                         }
+                        /**
+                         * @see com.alibaba.otter.canal.protocol.CanalEntry.RowData#beforeColumns_ 修改前的数据
+                         * @see com.alibaba.otter.canal.protocol.CanalEntry.RowData#afterColumns_ 修改后的数据
+                         */
                         CanalEntry.RowChange rowChange = CanalEntry.RowChange.parseFrom(entry.getStoreValue());
                         String tableName = entry.getHeader().getTableName();
                         if(log.isDebugEnabled()){

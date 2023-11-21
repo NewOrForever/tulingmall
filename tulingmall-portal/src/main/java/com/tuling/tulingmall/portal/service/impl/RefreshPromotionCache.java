@@ -58,7 +58,7 @@ public class RefreshPromotionCache {
              * 实际应该根据业务场景和对数据不一致的容忍度来决定使用那种方案：
              * 1. 容忍度比较宽松：定时刷新本地缓存（本地缓存失效的情况下才会去远程拉取）
              * 2. 容忍度不是很严格：每次定时刷新本地缓存时都会去远程拉取
-             * 3. 容忍度很严格，对数据一致性要求较高：canal 监听 binlog -> 往 mq 发送消息 -> mq 消费者 -> 删除本地缓存 
+             * 3. 容忍度很严格，对数据一致性要求较高：canal 监听 binlog -> 往 mq 发送消息 -> mq 消费者 -> 删除本地缓存
              */
             if(null == promotionCache.getIfPresent(brandKey)||null == promotionCacheBak.getIfPresent(brandKey)){
                 log.info("本地缓存[promotionCache] 需要刷新");
