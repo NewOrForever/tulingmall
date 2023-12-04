@@ -51,6 +51,10 @@ public class SecKillController {
     @RequestMapping(value = "/openSecKill", method = RequestMethod.GET)
     @ResponseBody
     public CommonResult<Integer> turnOnSecKill(@RequestParam long secKillId){
+        /**
+         * 更新秒杀活动状态、发布秒杀静态页得放在一个事务里面
+         * 发布失败 catch 异常 -> close 秒杀活动的时候 close 失败导致秒杀活动还是开启的，但是静态页没有发布
+         */
         int result = homePromotionService.turnOnSecKill(secKillId, ConstantPromotion.SECKILL_OPEN);
         try {
             if(secKillStaticHtmlService.deployHtml(secKillId) == ConstantPromotion.STATIC_HTML_FAILURE){

@@ -39,16 +39,25 @@ public class SecKillConfirmOrderServiceImpl implements SecKillConfirmOrderServic
     private RedisClusterUtil redisOpsUtil;
     @Autowired
     private RedisSingleUtil redisStockUtil;
+    /**
+     * 用于存放秒杀商品的库存是否售罄的本地缓存
+     */
     @Autowired
     private LocalCache<Boolean> cache;
     @Autowired
     private UnqidFeignApi unqidFeignApi;
 
+    /**
+     * 用于存放秒杀商品的信息的本地缓存
+     */
     @Autowired
     private Cache<String, FlashPromotionProduct> localCache;
 
     /*存放预制orderId的list，同时也可限流每秒允许个数，在更高并发的请求下，
     可以使用Disruptor代替 https://github.com/LMAX-Exchange/disruptor/wiki */
+    /**
+     * 每 100ms 拉取 200 个订单号
+     */
     private ConcurrentLinkedQueue<String> orderIdList = new ConcurrentLinkedQueue();
     private ConcurrentLinkedQueue<String> orderItemIdList = new ConcurrentLinkedQueue();
     public static final int ORDER_COUNT_LIMIT_SECOND = 2000;

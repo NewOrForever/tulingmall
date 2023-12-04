@@ -10,6 +10,7 @@ import com.tuling.tulingmall.util.LocalBloomFilter;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.redis.core.RedisTemplate;
@@ -32,6 +33,7 @@ public class BloomFilterConfig implements InitializingBean{
     private PmsProductService productService;
 
     @Autowired
+    @Qualifier("redisTemplate")
     private RedisTemplate template;
 
     @Bean

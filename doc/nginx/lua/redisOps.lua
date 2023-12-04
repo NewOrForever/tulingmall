@@ -22,6 +22,15 @@ local function read_redis(ip, port, key)
         ngx.log(ngx.ERR, "连接redis失败 : ", err)
         return nil
     end
+
+    -- 如果 Redis 设置了密码，需要进行认证
+    local res, err = red:auth("root@123456")
+    if not res then
+        ngx.log("Failed to authenticate: ", err)
+        close_redis(red)
+        return nil
+    end
+
     -- 查询redis
     local resp, err = red:get(key)
     -- 查询失败处理

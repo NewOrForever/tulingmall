@@ -63,8 +63,8 @@ public class SecKillStaticHtmlServiceImpl implements ISecKillStaticHtmlService {
 
     @PostConstruct
     public void init(){
-        templateDir = System.getProperty("user.home") + templateDir;
-        htmlDir = System.getProperty("user.home") + htmlDir;
+//        templateDir = System.getProperty("user.home") + templateDir;
+//        htmlDir = System.getProperty("user.home") + htmlDir;
     }
 
     /*具体产品页面的静态化*/

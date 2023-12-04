@@ -120,6 +120,12 @@ public class HomeServiceImpl implements HomeService {
     }
 
     public List<FlashPromotionProduct> getSecKillFromRemote(){
+        /**
+         * 这里为啥不去判断 redis 中没有秒杀商品数据时，再去 db 获取？
+         * 我猜想是因为如果开启了秒杀那么秒杀商品数据必然是会在 redis 中存在的
+         * 如果没有开启秒杀那么去 db 获取也是没有意义的 - 毕竟活动都没有开启，去db 中即便有数据也是无用的（未开启秒杀前这些秒杀商品都是无效的）
+         * @see com.tuling.tulingmall.promotion.controller.SecKillController#turnOnSecKill(long) 开启秒杀接口，单独部署秒杀服务
+         */
         List<FlashPromotionProduct> result = redisOpsUtil.getListAll(promotionRedisKey.getSecKillKey(),
                 FlashPromotionProduct.class);
 //        if(CollectionUtil.isEmpty(result)){

@@ -14,7 +14,7 @@ import java.util.concurrent.TimeUnit;
 public class RedisOpsExtUtil {
 
     @Autowired
-    @Qualifier("redisCluster")
+    @Qualifier("redisTemplate")
     private RedisTemplate redisTemplate;
 
     public void set(String key,Object value){

@@ -113,6 +113,10 @@ public class HomePromotionServiceImpl implements HomePromotionService {
             flashPromotionProduct.setFlashPromotionId(flashPromotionId);
             flashPromotionProduct.setFlashPromotionStartDate(flashPromotionParam.getStartDate());
             flashPromotionProduct.setFlashPromotionEndDate(flashPromotionParam.getEndDate());
+            /**
+             * 没配置域名，所以没法通过 DNS 来解析域名到指定IP
+             * 这里做了下优化：使用了类似DNS域名解析的方案，让多个秒杀商品的访问落在不同的Nginx服务之上
+             */
             String url = secKillServerList.get(loop % serverSize)+"/product?"+"flashPromotionId="+flashPromotionId
                     +"&promotionProductId="+productId;
             flashPromotionProduct.setSecKillServer(url);

@@ -4,7 +4,7 @@ spring:
   cloud:
     nacos:
       config:
-        server-addr: 127.0.0.1:8848 #配置中心的地址
+        server-addr: 123.60.150.23:8848 #配置中心的地址
         file-extension: yml #配置文件结尾的配置
         shared-configs[0]:
           data-id: tulingmall-nacos.yml
@@ -14,6 +14,10 @@ spring:
           data-id: tulingmall-db-common.yml
           group: DEFAULT_GROUP
           refresh: true
+        namespace: ace67433-6b98-4de3-acfe-9eb4b0f059e4
+      discovery:
+        server-addr: 123.60.150.23:8848
+        namespace: ace67433-6b98-4de3-acfe-9eb4b0f059e4
   profiles:
     active: dev
 
