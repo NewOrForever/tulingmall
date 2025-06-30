@@ -1,0 +1,30 @@
+management: #开启SpringBoot Admin的监控
+  endpoints:
+    web:
+      exposure:
+        include: '*'
+  endpoint:
+    health:
+      show-details: always
+
+seata:
+  config:
+    nacos:
+      server-addr: 192.168.65.206:8848,192.168.65.209:8848,192.168.65.210:8848
+    type: nacos
+  registry:
+    type: nacos
+  tx-service-group: tlmall_tx_group
+  client:
+    support:
+      spring:
+        datasource-autoproxy: true
+
+#zk分布式锁相关配置
+zk:
+  curator:
+    retryCount: 5 #重试次数
+    elapsedTimeMs: 5000 #
+    connectUrl: tlshop.com:2181 #zk地址
+    sessionTimeOutMs: 60000 #会话超时时间
+    connectionTimeOutMs: 5000 #连接超时时间

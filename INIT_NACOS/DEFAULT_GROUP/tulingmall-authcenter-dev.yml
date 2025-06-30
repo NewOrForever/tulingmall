@@ -1,0 +1,6 @@
+tuling:
+    jwt:
+      keyPairName: jwt.jks
+      keyPairAlias: jwt
+      keyPairSecret: 123456
+      keyPairStoreSecret: 123456

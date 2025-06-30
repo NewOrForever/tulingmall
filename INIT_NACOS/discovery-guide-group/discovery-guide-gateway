@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rule>
+    <strategy>
+        <version>{"discovery-guide-service-a":"1.0","discovery-guide-service-b":"1.0"}</version>
+    </strategy>
+    <strategy-release>
+        <conditions type="blue-green">
+            <condition id="green-condition" expression="#H['a'] == '1' &amp;&amp; #H['b'] == '2'" version-id="green-version-route"/>
+            <condition id="blue-condition" expression="#H['a'] == '1'" version-id="blue-version-route"/>
+            <condition id="basic-condition" version-id="basic-version-route"/>
+        </conditions>
+        <routes>
+            
+            <route id="green-version-route" type="version">{"discovery-guide-service-a":"1.0","discovery-guide-service-b":"1.0"}</route>
+            <route id="blue-version-route" type="version">{"discovery-guide-service-a":"1.1","discovery-guide-service-b":"1.1"}</route>
+            <route id="basic-version-route" type="version">{"discovery-guide-service-a":"1.0", "discovery-guide-service-b":"1.0"}</route>
+        </routes>
+    </strategy-release>
+</rule>

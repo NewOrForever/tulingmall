@@ -1,0 +1,1 @@
+[{"count":3.0,"grade":2,"limitApp":"default","minRequestAmount":5,"resource":"GET:http://tulingmall-member/member/address/{id}","slowRatioThreshold":0.4,"statIntervalMs":1000,"timeWindow":10}]

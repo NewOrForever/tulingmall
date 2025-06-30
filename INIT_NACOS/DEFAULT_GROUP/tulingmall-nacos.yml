@@ -1,0 +1,8 @@
+spring:
+  cloud:
+    config:
+    #本地配置优先
+      override-none: true    
+    nacos:
+      discovery:
+        server-addr: 127.0.0.1:8848

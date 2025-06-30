@@ -1,0 +1,13 @@
+namespace:
+  promotion: prmt
+promotion:
+  brand: br
+  newProduct: np
+  recProduct: rp
+  homeAdvertise: hd
+  distlock:
+    brand: dlbr
+    newProduct: dlnp
+    recProduct: dlrp
+    homeAdvertise: dlhd
+    timeOut: 5000

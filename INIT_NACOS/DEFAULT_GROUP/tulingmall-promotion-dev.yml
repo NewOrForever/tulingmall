@@ -1,0 +1,47 @@
+server:
+  port: 8899
+spring:
+  application:
+    name: tulingmall-promotion
+  datasource:
+    url: jdbc:mysql://127.0.0.1:3306/tl_mall_promotion?serverTimezone=UTC&useSSL=false&useUnicode=true&characterEncoding=UTF-8
+    username: root
+    password: 123456
+    druid:
+      initial-size: 5 #连接池初始化大小
+      min-idle: 10 #最小空闲连接数
+      max-active: 20 #最大连接数
+      web-stat-filter:
+        exclusions: "*.js,*.gif,*.jpg,*.png,*.css,*.ico,/druid/*" #不统计这些请求数据
+      stat-view-servlet: #访问监控网页的登录用户名和密码
+        login-username: druid
+        login-password: druid
+  cloud:
+    nacos:
+      discovery:
+        server-addr: 218.76.8.107:8848            
+mybatis:
+  mapper-locations:
+    - classpath:mapper/*.xml
+    - classpath:dao/*.xml
+secKillServerList:
+    http://218.76.8.107
+seckill:
+  templateDir: /template/ftl
+  templateName: product.ftl
+  htmlDir: /template/html
+  serverList:
+    218.76.8.107
+  sftp:
+    port: 22
+    userName: seckill
+    password: seckill123
+    rootPath: /usr/local/openresty/tpl
+management: #开启SpringBoot Admin的监控
+  endpoints:
+    web:
+      exposure:
+        include: '*'
+  endpoint:
+    health:
+      show-details: always
